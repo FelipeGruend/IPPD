@@ -15,14 +15,9 @@ int main(int argc, char* argv[]){
     printf("Enter a, b, and n\n");
     scanf("%lf %lf %d", &a, &b, &n);
 
-    # pragma omp parallel num_threads(thread_count)
+    # pragma omp parallel num_threads(thread_count) reduction(+: global_result)
     {
-        double my_result = 0.0; /* private */
-
-        my_result = Local_trap(a, b, n);
-        
-        # pragma omp critical
-            global_result += my_result;
+        global_result += Local_trap(a, b, n);
     }
     printf("With n = %d trapezoids, our estimate\n", n);
     printf("of the integral from %f to %f = %.14e\n", a, b, global_result);
