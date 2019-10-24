@@ -38,10 +38,9 @@ double Local_trap(double a, double b, int n){
     local_b = local_a + local_n*h;
     my_result = (f(local_a) + f(local_b)) / 2.0;
 
-    for (i = 1; i <= local_n - 1; i++){
-        x = local_a + i*h;
-        my_result += f(x);
-    }
+    # pragma omp parallel for num_threads(thread_count) reduction(+: my_result)
+        for (i = 1; i <= local_n - 1; i++)
+            my_result += f(local_a + i*h);
     my_result = my_result*h;
 
     return my_result;
