@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     // Para os processos diferentes de zero
     if (my_rank != 0){
 
-        // Se o numero desejado for 0, apenas retorna
+        // Se o numero desejado for 0 ou 1, apenas retorna
         if((n_prime == 0) || (n_prime == 1)){
             MPI_Finalize();
             return 0;
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]){
 
     }else{
 
+        // Se o numero desejado for 0 ou 1, apenas retorna
         if((n_prime == 0) || (n_prime == 1)){
             printf("%d\n", n_prime);
             MPI_Finalize();
@@ -64,19 +65,23 @@ int main(int argc, char *argv[]){
         }
         int i = 1;
         
-        // Laço para ficar recebendo dos outros processos até que o número máximo seja enviado
-        while(*prime < n_prime){
-            printf("oi");
-            MPI_Recv(prime, 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            printf("%d\n", *prime);
+        for(i = 1; i < comm_sz; i++){
             
-            if(i == comm_sz){
-                i = 1;
-            }else{
-                i++;
-                i = i % comm_sz;
-            }
         }
+
+        // // Laço para ficar recebendo dos outros processos até que o número máximo seja enviado
+        // while(*prime < n_prime){
+        //     printf("oi");
+        //     MPI_Recv(prime, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //     printf("%d\n", *prime);
+            
+        //     if(i == comm_sz){
+        //         i = 1;
+        //     }else{
+        //         i++;
+        //         i = i % comm_sz;
+        //     }
+        // }
     }
 
     MPI_Finalize();
